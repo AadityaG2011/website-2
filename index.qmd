@@ -1,0 +1,54 @@
+---
+title: "Billboard Graphic"
+execute:
+  echo: false
+---
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+library(tidyr)
+library(ggridges)
+```
+
+```{r}
+# Load data
+data("billboard")
+
+# Reshape to long format
+billboard_long <- billboard %>%
+  pivot_longer(
+    cols = starts_with("wk"),
+    names_to = "week",
+    names_prefix = "wk",
+    values_to = "rank",
+    values_drop_na = TRUE
+  ) %>%
+  mutate(week = as.integer(week))
+
+# Filter to first 20 weeks (most songs stay <= 20 weeks)
+filtered_data <- billboard_long %>%
+  filter(week <= 20)
+
+# Plot: density ridge plot of ranks by week
+ggplot(filtered_data, aes(x = rank, y = factor(week), fill = after_stat(x))) +
+  geom_density_ridges_gradient(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 8  # manually set to suppress message
+  ) +
+  scale_x_reverse(breaks = seq(0, 100, 10)) +
+  scale_fill_viridis_c(option = "C") +
+  labs(
+    title = "Billboard Song Rank Distributions by Week",
+    subtitle = "Each ridge shows how songs were ranked during that week (lower is better)",
+    x = "Rank",
+    y = "Week on Chart",
+    caption = "Data: tidyr::billboard"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 18),
+    axis.title = element_text(face = "bold"),
+    legend.position = "none"
+  )
+```
