@@ -2,4 +2,8 @@
 title: "About"
 ---
 
-About this site
+## About Me
+
+My name is **Aaditya Gupta**, and I am a freshman at *Rocklin High School*.
+
+[Kane's Free Data Science Bootcamp](https://bootcamp.davidkane.info)
